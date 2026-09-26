@@ -318,6 +318,8 @@
     background: var(--accent);
     color: #fff;
     box-shadow: 0 3px 0 var(--accent-deep);
+    text-decoration: none;
+    display: inline-block;
     transition: transform 0.1s ease, box-shadow 0.1s ease;
   }
   .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--accent-deep); }
@@ -457,6 +459,7 @@
     <div class="actions">
       <button type="button" class="btn quiet" id="keepBtn">Keep this one</button>
       <button type="button" class="btn" id="nextBtn">Next slip</button>
+      <a class="btn" id="quizLink" href="quiz.html" hidden>Now, a quiz about us</a>
     </div>
   </div>
 </div>
@@ -604,6 +607,8 @@ function showCard(reason, n, isFinal) {
   $("keepBtn").classList.remove("kept");
   $("keepBtn").disabled = false;
   $("nextBtn").textContent = isFinal ? "Close" : "Next slip";
+  $("nextBtn").classList.toggle("quiet", isFinal);
+  $("quizLink").hidden = !isFinal;
   $("stage").classList.add("open");
   $("stage").setAttribute("aria-hidden", "false");
   if (isFinal) confetti();

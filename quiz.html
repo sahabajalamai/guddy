@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How Well Do You Know Us</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Caveat:wght@500;600&family=Nunito:wght@400;600;700&display=swap">
+<style>
+  :root {
+    --bg: #f7e6ea;
+    --bg-deep: #efd3db;
+    --ink: #3a2340;
+    --ink-soft: #7a6280;
+    --accent: #c4577a;
+    --accent-deep: #9d3f61;
+    --paper: #f3e4c6;
+    --paper-line: #d9c39a;
+    --paper-shadow: #b89a68;
+    --good: #4f9d7a;
+    --good-soft: #d9efe4;
+    --bad: #d46a6a;
+    --bad-soft: #f8dcdc;
+    --display: "Gloock", "Georgia", serif;
+    --hand: "Caveat", "Bradley Hand", "Segoe Script", cursive;
+    --body: "Nunito", "Helvetica Neue", Arial, sans-serif;
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    background: radial-gradient(120% 80% at 50% 0%, #fbeef1 0%, var(--bg) 45%, var(--bg-deep) 100%) fixed;
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.5;
+    padding-inline: 16px;
+    padding-block: 24px 48px;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .page {
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  header { text-align: center; display: grid; gap: 4px; }
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+  h1 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(32px, 8.5vw, 42px);
+    line-height: 1.05;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .lede { font-family: var(--hand); font-size: 28px; color: var(--ink-soft); margin: 4px 0 0; }
+
+  /* ---------- Progress ---------- */
+  .progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  .bar {
+    flex: 1;
+    height: 10px;
+    background: rgba(58,35,64,0.12);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .bar > div {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 0.4s ease;
+  }
+
+  /* ---------- Question card ---------- */
+  .qcard {
+    --lh: 40px;
+    background: var(--paper);
+    background-image: repeating-linear-gradient(180deg, transparent 0 calc(var(--lh) - 1px), var(--paper-line) calc(var(--lh) - 1px) var(--lh));
+    background-position: 0 30px;
+    border-radius: 6px;
+    padding: 28px 22px 22px;
+    box-shadow: 0 20px 40px -18px rgba(58,35,64,0.5), 0 2px 0 var(--paper-shadow);
+    position: relative;
+    display: grid;
+    gap: 18px;
+  }
+  .qcard::before {
+    content: "";
+    position: absolute;
+    top: -10px; left: 50%;
+    width: 70px; height: 22px;
+    transform: translateX(-50%) rotate(-2deg);
+    background: rgba(255, 230, 160, 0.75);
+    box-shadow: 0 1px 2px rgba(58,35,64,0.15);
+  }
+  .question {
+    font-family: var(--hand);
+    font-size: clamp(30px, 8vw, 36px);
+    line-height: var(--lh);
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .options { display: grid; gap: 10px; }
+  .opt {
+    font-family: var(--body);
+    font-size: 17px;
+    font-weight: 600;
+    text-align: left;
+    background: #fff;
+    color: var(--ink);
+    border: 2px solid rgba(58,35,64,0.15);
+    border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    transition: transform 0.1s ease, border-color 0.15s ease, background 0.15s ease;
+  }
+  .opt .key {
+    flex: none;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--bg-deep);
+    color: var(--accent-deep);
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .opt:not(:disabled):hover { border-color: var(--accent); }
+  .opt:not(:disabled):active { transform: scale(0.98); }
+  .opt:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .opt:disabled { cursor: default; }
+  .opt.right { background: var(--good-soft); border-color: var(--good); }
+  .opt.right .key { background: var(--good); color: #fff; }
+  .opt.wrong { background: var(--bad-soft); border-color: var(--bad); }
+  .opt.wrong .key { background: var(--bad); color: #fff; }
+  .opt.dim { opacity: 0.55; }
+
+  .reveal {
+    display: none;
+    gap: 12px;
+    padding-top: 6px;
+    border-top: 1.5px dashed var(--paper-shadow);
+  }
+  .reveal.show { display: grid; }
+  .verdict {
+    font-family: var(--hand);
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0;
+  }
+  .verdict.good { color: var(--good); }
+  .verdict.bad { color: var(--bad); }
+  .memory { margin: 0; color: var(--ink); font-size: 16px; }
+  .reveal img {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 6px;
+    border: 6px solid #fff;
+    box-shadow: 0 6px 14px rgba(58,35,64,0.2);
+    transform: rotate(1.5deg);
+    display: block;
+  }
+  .actions { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    font-family: var(--body);
+    font-weight: 700;
+    font-size: 17px;
+    border: 0;
+    border-radius: 999px;
+    padding: 12px 20px;
+    cursor: pointer;
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 3px 0 var(--accent-deep);
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--accent-deep); }
+  .btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+  .btn.quiet { background: transparent; color: var(--accent-deep); box-shadow: inset 0 0 0 2px var(--accent); }
+
+  /* ---------- Result ---------- */
+  .result { display: none; gap: 18px; text-align: center; }
+  .result.show { display: grid; }
+  .score {
+    font-family: var(--display);
+    font-size: clamp(56px, 18vw, 84px);
+    line-height: 1;
+    color: var(--accent-deep);
+    font-variant-numeric: tabular-nums;
+  }
+  .score small { font-size: 0.4em; color: var(--ink-soft); }
+  .result .note {
+    font-family: var(--hand);
+    font-size: clamp(28px, 7.5vw, 34px);
+    line-height: 1.2;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .result .from { font-family: var(--hand); font-size: 28px; color: var(--accent-deep); margin: 0; }
+  .result .actions { justify-content: center; }
+
+  canvas.confetti {
+    position: fixed; inset: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 60;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bar > div, .opt, .btn { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<main class="page">
+  <header>
+    <div class="eyebrow">Part two</div>
+    <h1>How well do you know us?</h1>
+    <p class="lede">No pressure. Every answer unlocks a memory.</p>
+  </header>
+
+  <div class="progress" id="progress">
+    <span id="progressText">1 / 10</span>
+    <div class="bar"><div id="bar"></div></div>
+  </div>
+
+  <section class="qcard" id="qcard" aria-live="polite">
+    <p class="question" id="question"></p>
+    <div class="options" id="options"></div>
+    <div class="reveal" id="reveal">
+      <p class="verdict" id="verdict"></p>
+      <p class="memory" id="memory"></p>
+      <div id="photo"></div>
+      <div class="actions">
+        <button type="button" class="btn" id="nextBtn">Next question</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="result" id="result">
+    <div class="score"><span id="scoreNum">0</span><small> / <span id="scoreTotal">0</span></small></div>
+    <p class="note" id="resultNote"></p>
+    <p class="from" id="resultFrom"></p>
+    <div class="actions">
+      <button type="button" class="btn quiet" id="againBtn">Play again</button>
+      <a class="btn" href="./">Back to the jar</a>
+    </div>
+  </section>
+</main>
+
+<canvas class="confetti" id="confetti" hidden></canvas>
+
+<script>
+/* ============================================================
+   EDIT THIS BLOCK. Everything else is machinery.
+   ============================================================ */
+const HER_NAME = "Guddy";
+const FROM = "Love, Sab";
+
+// Each question: the prompt, four options, which option is correct (0 to 3),
+// a memory to reveal after answering, and an optional photo URL.
+const QUESTIONS = [
+  {
+    q: "Where did we first meet?",
+    options: ["At a friend's party", "In a college class", "Online", "At a coffee shop"],
+    answer: 2,
+    memory: "I still remember the first message you sent. I read it about forty times.",
+    photo: "",
+  },
+  {
+    q: "What was the first movie we watched together?",
+    options: ["Interstellar", "3 Idiots", "La La Land", "A horror film you picked"],
+    answer: 1,
+    memory: "You quoted every line and I did not mind at all.",
+  },
+  {
+    q: "What did I order on our first date?",
+    options: ["Biryani", "Pizza", "Just coffee, I was too nervous", "Momos"],
+    answer: 2,
+    memory: "I was so nervous I forgot to eat. You noticed and shared your fries.",
+  },
+  {
+    q: "What is my nickname for you?",
+    options: ["Guddy", "Boss", "Trouble", "All of the above"],
+    answer: 3,
+    memory: "Depends on the day and how much trouble you are causing.",
+  },
+  {
+    q: "Which song do I always say is 'our song'?",
+    options: ["Perfect", "Tum Hi Ho", "Until I Found You", "Whatever is playing when you smile"],
+    answer: 3,
+    memory: "Fine. It is Perfect. But the other answer is also true.",
+  },
+  {
+    q: "What is the one thing I always forget?",
+    options: ["My keys", "To reply to your texts", "Where I parked", "Your birthday (never)"],
+    answer: 0,
+    memory: "You have found my keys more times than I have.",
+  },
+  {
+    q: "What do I do when you are upset?",
+    options: ["Make bad jokes", "Order your favourite food", "Both, in that order", "Panic"],
+    answer: 2,
+    memory: "The jokes are bad on purpose. The food is not.",
+  },
+  {
+    q: "What is my favourite thing about you?",
+    options: ["Your laugh", "Your kindness", "The way you say my name", "This is a trap, it is everything"],
+    answer: 3,
+    memory: "There was never a wrong answer here.",
+  },
+  {
+    q: "Where do I want to take you one day?",
+    options: ["Paris", "Ladakh", "Anywhere with you", "Bali"],
+    answer: 2,
+    memory: "But also Ladakh. Start packing.",
+  },
+  {
+    q: "What am I doing right now?",
+    options: ["Working", "Sleeping", "Wishing I was next to you", "Making this quiz"],
+    answer: 2,
+    memory: "Happy birthday, " + HER_NAME + ". Thank you for being mine.",
+  },
+];
+
+// Shown at the end. Pick by how many she got right.
+function resultMessage(score, total) {
+  if (score === total) return "Perfect score. You know me better than I know myself, " + HER_NAME + ".";
+  if (score >= total * 0.7) return "Almost perfect. The ones you missed were trick questions anyway.";
+  if (score >= total * 0.4) return "Half right, fully loved. We have plenty of time to fix the rest.";
+  return "The score does not matter. You already have all of me, " + HER_NAME + ".";
+}
+/* ============================================================ */
+
+const $ = (id) => document.getElementById(id);
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const KEYS = ["A", "B", "C", "D"];
+const CHEERS = ["Yes!", "Correct!", "You know me.", "Exactly.", "Nailed it."];
+const NOPES = ["Not quite.", "Close, but no.", "Nope.", "Trick question.", "Wrong, but cute."];
+
+let index = 0;
+let score = 0;
+
+function render() {
+  const q = QUESTIONS[index];
+  $("progressText").textContent = (index + 1) + " / " + QUESTIONS.length;
+  $("bar").style.width = ((index) / QUESTIONS.length * 100) + "%";
+  $("question").textContent = q.q;
+  const box = $("options");
+  box.innerHTML = "";
+  q.options.forEach((label, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "opt";
+    b.innerHTML = '<span class="key">' + KEYS[i] + '</span><span></span>';
+    b.lastChild.textContent = label;
+    b.addEventListener("click", () => answer(i));
+    box.appendChild(b);
+  });
+  $("reveal").classList.remove("show");
+  $("photo").innerHTML = "";
+  $("nextBtn").textContent = index === QUESTIONS.length - 1 ? "See your score" : "Next question";
+  window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+}
+
+function answer(i) {
+  const q = QUESTIONS[index];
+  const opts = Array.from($("options").children);
+  opts.forEach((b, j) => {
+    b.disabled = true;
+    if (j === q.answer) b.classList.add("right");
+    else if (j === i) b.classList.add("wrong");
+    else b.classList.add("dim");
+  });
+  const right = i === q.answer;
+  if (right) score++;
+  const pool = right ? CHEERS : NOPES;
+  $("verdict").textContent = pool[Math.floor(Math.random() * pool.length)];
+  $("verdict").className = "verdict " + (right ? "good" : "bad");
+  $("memory").textContent = q.memory || "";
+  if (q.photo) {
+    const img = document.createElement("img");
+    img.src = q.photo;
+    img.alt = "";
+    $("photo").appendChild(img);
+  }
+  $("reveal").classList.add("show");
+  $("bar").style.width = ((index + 1) / QUESTIONS.length * 100) + "%";
+  setTimeout(() => $("nextBtn").focus({ preventScroll: true }), 50);
+}
+
+function next() {
+  if (index < QUESTIONS.length - 1) {
+    index++;
+    render();
+  } else {
+    finish();
+  }
+}
+
+function finish() {
+  $("qcard").hidden = true;
+  $("progress").hidden = true;
+  $("scoreNum").textContent = score;
+  $("scoreTotal").textContent = QUESTIONS.length;
+  $("resultNote").textContent = resultMessage(score, QUESTIONS.length);
+  $("resultFrom").textContent = FROM;
+  $("result").classList.add("show");
+  window.scrollTo({ top: 0 });
+  confetti();
+}
+
+function restart() {
+  index = 0;
+  score = 0;
+  $("result").classList.remove("show");
+  $("qcard").hidden = false;
+  $("progress").hidden = false;
+  render();
+}
+
+$("nextBtn").addEventListener("click", next);
+$("againBtn").addEventListener("click", restart);
+
+function confetti() {
+  if (reduceMotion) return;
+  const c = $("confetti");
+  c.hidden = false;
+  const ctx = c.getContext("2d");
+  const dpr = window.devicePixelRatio || 1;
+  c.width = innerWidth * dpr;
+  c.height = innerHeight * dpr;
+  ctx.scale(dpr, dpr);
+  const colors = ["#c4577a", "#f3e4c6", "#3a2340", "#b9d3c6", "#ffd166", "#ffffff"];
+  const bits = Array.from({ length: 160 }, () => ({
+    x: Math.random() * innerWidth,
+    y: -20 - Math.random() * innerHeight * 0.5,
+    w: 6 + Math.random() * 6,
+    h: 8 + Math.random() * 8,
+    vx: Math.random() * 2 - 1,
+    vy: 2 + Math.random() * 3,
+    r: Math.random() * Math.PI,
+    vr: Math.random() * 0.2 - 0.1,
+    col: colors[Math.floor(Math.random() * colors.length)],
+  }));
+  const start = performance.now();
+  function frame(t) {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    let alive = false;
+    for (const b of bits) {
+      b.x += b.vx; b.y += b.vy; b.r += b.vr; b.vx += Math.sin(t / 300 + b.y / 50) * 0.02;
+      if (b.y < innerHeight + 20) alive = true;
+      ctx.save();
+      ctx.translate(b.x, b.y);
+      ctx.rotate(b.r);
+      ctx.fillStyle = b.col;
+      ctx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h);
+      ctx.restore();
+    }
+    if (alive && t - start < 7000) requestAnimationFrame(frame);
+    else { ctx.clearRect(0, 0, innerWidth, innerHeight); c.hidden = true; }
+  }
+  requestAnimationFrame(frame);
+}
+
+document.title = "How well do you know us?";
+render();
+</script>
+</body>
+</html>
