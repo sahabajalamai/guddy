@@ -1,3 +1,8 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Guddy's Jar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Caveat:wght@500;600&family=Nunito:wght@400;600;700&display=swap">
@@ -93,14 +98,13 @@
     width: 250px;
     height: 320px;
     transform-origin: 0 0;
-    scale: var(--s, 1);
+    transform: scale(var(--s, 1));
     cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
-    transition: transform 0.15s ease;
   }
   .jar-wrap:focus-visible { outline: 3px solid var(--accent); outline-offset: 8px; border-radius: 40px; }
-  .jar-wrap.shake { animation: shake 0.5s ease; }
+  .jar-box.shake { animation: shake 0.5s ease; }
 
   .lid {
     position: absolute;
@@ -407,10 +411,12 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .card, .slip-mini, .stage, .jar-wrap { transition: none; }
-    .jar-wrap.shake { animation: none; }
+    .card, .slip-mini, .stage { transition: none; }
+    .jar-box.shake { animation: none; }
   }
 </style>
+</head>
+<body>
 
 <main class="page">
   <header>
@@ -562,7 +568,7 @@ function reset() {
 
 function draw() {
   if (drawn >= deck.length) return;
-  const jar = $("jar");
+  const jar = $("jarBox");
   jar.classList.remove("shake");
   void jar.offsetWidth;
   jar.classList.add("shake");
@@ -715,3 +721,5 @@ function confetti() {
 
 reset();
 </script>
+</body>
+</html>
