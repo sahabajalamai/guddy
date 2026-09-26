@@ -1,0 +1,695 @@
+<title>Guddy's Jar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Caveat:wght@500;600&family=Nunito:wght@400;600;700&display=swap">
+<style>
+  :root {
+    --bg: #f7e6ea;
+    --bg-deep: #efd3db;
+    --ink: #3a2340;
+    --ink-soft: #7a6280;
+    --accent: #c4577a;
+    --accent-deep: #9d3f61;
+    --paper: #f3e4c6;
+    --paper-line: #d9c39a;
+    --paper-shadow: #b89a68;
+    --glass: rgba(190, 220, 210, 0.35);
+    --glass-edge: rgba(120, 160, 150, 0.55);
+    --lid: #c9a26a;
+    --lid-deep: #a37f4c;
+    --board: #d8b48f;
+    --board-deep: #b58f6a;
+    --display: "Gloock", "Georgia", serif;
+    --hand: "Caveat", "Bradley Hand", "Segoe Script", cursive;
+    --body: "Nunito", "Helvetica Neue", Arial, sans-serif;
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    background: radial-gradient(120% 80% at 50% 0%, #fbeef1 0%, var(--bg) 45%, var(--bg-deep) 100%) fixed;
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.5;
+    padding-inline: 16px;
+    padding-block: 24px 48px;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .page {
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+  }
+
+  header { text-align: center; display: grid; gap: 4px; }
+
+  .eyebrow {
+    font-family: var(--body);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+
+  h1 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(34px, 9vw, 46px);
+    line-height: 1.05;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .lede {
+    font-family: var(--hand);
+    font-size: 24px;
+    color: var(--ink-soft);
+    margin: 4px 0 0;
+  }
+
+  /* ---------- Jar ---------- */
+  .jar-wrap {
+    position: relative;
+    width: 250px;
+    height: 320px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: transform 0.15s ease;
+  }
+  .jar-wrap:active { transform: scale(0.97); }
+  .jar-wrap:focus-visible { outline: 3px solid var(--accent); outline-offset: 8px; border-radius: 40px; }
+  .jar-wrap.shake { animation: shake 0.5s ease; }
+
+  .lid {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 170px;
+    height: 34px;
+    background: linear-gradient(180deg, #dcb87f, var(--lid) 50%, var(--lid-deep));
+    border-radius: 10px 10px 4px 4px;
+    box-shadow: 0 4px 0 var(--lid-deep), 0 8px 14px rgba(58, 35, 64, 0.18);
+    z-index: 4;
+  }
+  .lid::after {
+    content: "";
+    position: absolute;
+    inset: 8px 12px auto 12px;
+    height: 4px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.35);
+  }
+
+  .neck {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 26px;
+    background: var(--glass);
+    border-inline: 3px solid var(--glass-edge);
+    z-index: 2;
+  }
+
+  .glass {
+    position: absolute;
+    top: 52px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 220px;
+    height: 250px;
+    border-radius: 34px 34px 46px 46px;
+    background:
+      linear-gradient(100deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 28%, rgba(255,255,255,0) 70%, rgba(255,255,255,0.35) 100%),
+      var(--glass);
+    border: 3px solid var(--glass-edge);
+    box-shadow: inset 0 -18px 30px rgba(120,160,150,0.25), 0 18px 30px -12px rgba(58,35,64,0.35);
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .label {
+    position: absolute;
+    top: 72px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    width: 132px;
+    padding: 6px 8px;
+    background: var(--paper);
+    border: 1.5px dashed var(--paper-shadow);
+    text-align: center;
+    font-family: var(--hand);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    z-index: 3;
+    box-shadow: 0 3px 6px rgba(58,35,64,0.12);
+    pointer-events: none;
+  }
+
+  .slips { position: absolute; inset: 0; }
+  .slip-mini {
+    position: absolute;
+    width: 46px;
+    height: 20px;
+    background: var(--paper);
+    border: 1px solid var(--paper-shadow);
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(58,35,64,0.15);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .slip-mini::before {
+    content: "";
+    position: absolute;
+    left: 6px; right: 6px; top: 6px;
+    height: 1px;
+    background: var(--paper-line);
+    box-shadow: 0 5px 0 var(--paper-line);
+  }
+  .slip-mini.gone { opacity: 0; transform: translateY(-40px) scale(0.6); }
+
+  .shine {
+    position: absolute;
+    top: 64px;
+    left: 50%;
+    width: 18px;
+    height: 200px;
+    transform: translateX(-88px) rotate(4deg);
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0));
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .hint {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    font-size: 15px;
+  }
+  .count {
+    font-variant-numeric: tabular-nums;
+    background: var(--ink);
+    color: #fff;
+    border-radius: 999px;
+    padding: 2px 10px;
+    font-size: 13px;
+  }
+
+  /* ---------- Flying slip and card ---------- */
+  .stage {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    z-index: 50;
+    background: rgba(58, 35, 64, 0);
+    pointer-events: none;
+    transition: background 0.4s ease;
+  }
+  .stage.open { background: rgba(58, 35, 64, 0.45); pointer-events: auto; }
+
+  .card {
+    width: min(92vw, 400px);
+    background: var(--paper);
+    background-image: repeating-linear-gradient(180deg, transparent 0 31px, var(--paper-line) 31px 32px);
+    background-position: 0 42px;
+    border-radius: 6px;
+    padding: 40px 28px 22px;
+    box-shadow: 0 30px 50px -20px rgba(58,35,64,0.6), 0 2px 0 var(--paper-shadow);
+    transform: translateY(60px) scale(0.2) rotate(-14deg);
+    opacity: 0;
+    transform-origin: 50% 100%;
+    transition: transform 0.55s cubic-bezier(.2,.9,.3,1.2), opacity 0.3s ease;
+    position: relative;
+    display: grid;
+    gap: 16px;
+  }
+  .stage.open .card { transform: none; opacity: 1; }
+  .card::before {
+    content: "";
+    position: absolute;
+    top: -10px; left: 50%;
+    width: 70px; height: 22px;
+    transform: translateX(-50%) rotate(-2deg);
+    background: rgba(255, 230, 160, 0.75);
+    box-shadow: 0 1px 2px rgba(58,35,64,0.15);
+  }
+  .card .num {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent-deep);
+  }
+  .card .text {
+    font-family: var(--hand);
+    font-size: 30px;
+    line-height: 32px;
+    font-weight: 500;
+    color: var(--ink);
+    margin: 0;
+    min-height: 64px;
+  }
+  .card img {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 6px;
+    border: 6px solid #fff;
+    box-shadow: 0 6px 14px rgba(58,35,64,0.2);
+    transform: rotate(1.5deg);
+    display: block;
+  }
+  .card .actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+  .card.final {
+    background-color: #fff5f0;
+    padding-top: 48px;
+  }
+  .card.final .text { font-size: 34px; line-height: 38px; }
+  .card.final .from { font-family: var(--hand); font-size: 26px; color: var(--accent-deep); margin: 0; text-align: right; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    font-family: var(--body);
+    font-weight: 700;
+    font-size: 15px;
+    border: 0;
+    border-radius: 999px;
+    padding: 10px 18px;
+    cursor: pointer;
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 3px 0 var(--accent-deep);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--accent-deep); }
+  .btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+  .btn.quiet {
+    background: transparent;
+    color: var(--accent-deep);
+    box-shadow: inset 0 0 0 2px var(--accent);
+  }
+  .btn.quiet:active { box-shadow: inset 0 0 0 2px var(--accent-deep); }
+  .btn.kept { background: var(--ink); box-shadow: 0 3px 0 #1f1024; }
+
+  /* ---------- Board ---------- */
+  .board {
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .board.show { display: flex; }
+  .board h2 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 22px;
+    margin: 0;
+  }
+  .board .cork {
+    background: var(--board);
+    background-image: radial-gradient(rgba(0,0,0,0.08) 1px, transparent 1px);
+    background-size: 7px 7px;
+    border: 8px solid var(--board-deep);
+    border-radius: 6px;
+    padding: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    min-height: 90px;
+  }
+  .pin {
+    background: var(--paper);
+    padding: 12px 14px 10px;
+    font-family: var(--hand);
+    font-size: 21px;
+    line-height: 1.15;
+    max-width: 200px;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(58,35,64,0.2);
+  }
+  .pin::before {
+    content: "";
+    position: absolute;
+    top: -7px; left: 50%;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 2px 2px rgba(0,0,0,0.3), inset 0 -2px 0 var(--accent-deep);
+    transform: translateX(-50%);
+  }
+
+  .footer-note {
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+  .footer-note button {
+    font: inherit;
+    font-weight: 700;
+    background: none;
+    border: 0;
+    color: var(--accent-deep);
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+  }
+
+  canvas.confetti {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 60;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: rotate(0); }
+    20% { transform: rotate(-5deg); }
+    40% { transform: rotate(5deg); }
+    60% { transform: rotate(-3deg); }
+    80% { transform: rotate(3deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card, .slip-mini, .stage, .jar-wrap { transition: none; }
+    .jar-wrap.shake { animation: none; }
+  }
+</style>
+
+<main class="page">
+  <header>
+    <div class="eyebrow">Happy birthday</div>
+    <h1 id="title">Guddy's Jar</h1>
+    <p class="lede">A jar of reasons. Pick one.</p>
+  </header>
+
+  <div class="jar-wrap" id="jar" role="button" tabindex="0" aria-label="Pick a slip from the jar">
+    <div class="lid"></div>
+    <div class="neck"></div>
+    <div class="label" id="label">Reasons I love you</div>
+    <div class="glass"><div class="slips" id="slips"></div></div>
+    <div class="shine"></div>
+  </div>
+
+  <div class="hint">
+    <span id="hintText">Tap the jar to pull one out</span>
+    <span class="count" id="count">0 left</span>
+  </div>
+
+  <section class="board" id="board" aria-live="polite">
+    <h2>Ones you kept</h2>
+    <div class="cork" id="cork"></div>
+  </section>
+
+  <p class="footer-note">Shake your phone to pull a random slip. <button type="button" id="refill" hidden>Refill the jar</button></p>
+</main>
+
+<div class="stage" id="stage" aria-hidden="true">
+  <div class="card" id="card" role="dialog" aria-modal="true" aria-labelledby="cardText">
+    <div class="num" id="cardNum"></div>
+    <p class="text" id="cardText"></p>
+    <div id="cardPhoto"></div>
+    <p class="from" id="cardFrom" hidden></p>
+    <div class="actions">
+      <button type="button" class="btn quiet" id="keepBtn">Keep this one</button>
+      <button type="button" class="btn" id="nextBtn">Next slip</button>
+    </div>
+  </div>
+</div>
+
+<canvas class="confetti" id="confetti" hidden></canvas>
+
+<script>
+/* ============================================================
+   EDIT THIS BLOCK. Everything else is machinery.
+   ============================================================ */
+const HER_NAME = "Guddy";
+const FROM = "Love, Sab";
+
+// Each reason is a string, or { text: "...", photo: "https://..." } to attach a picture.
+const REASONS = [
+  "You laugh at your own jokes before you finish telling them.",
+  "The way you say my name when you want something.",
+  "You always know when I need a hug before I do.",
+  "You steal my hoodies and somehow they look better on you.",
+  "You never let me eat alone, even over a video call.",
+  "Your voice notes are always three minutes longer than they need to be. I listen to every second.",
+  "You remember tiny things I said months ago.",
+  "You dance in the kitchen when you think nobody is watching.",
+  "You make ordinary Tuesdays feel like plans.",
+  "You are kind to waiters, strangers, and stray cats.",
+  "The face you make when you try something spicy.",
+  "You never give up on the people you love. Especially me.",
+  "You are the first person I want to tell good news to.",
+  "You get excited about small things, and it is contagious.",
+  "Your handwriting. I have kept every note.",
+  "You believe in me on the days I forget how.",
+  "You sing the wrong lyrics with full confidence.",
+  "Being next to you feels like being home.",
+];
+
+// The last slip. It is always saved for the end.
+const FINAL_REASON = "And the biggest reason of all: you are you. Happy birthday, " + HER_NAME + ". I love you more every single day.";
+/* ============================================================ */
+
+const $ = (id) => document.getElementById(id);
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+document.title = HER_NAME + "'s Jar";
+$("title").textContent = HER_NAME + "'s Jar";
+
+let deck = [];
+let drawn = 0;
+let current = null;
+let kept = [];
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function normalize(r) {
+  return typeof r === "string" ? { text: r } : r;
+}
+
+function buildJar() {
+  const box = $("slips");
+  box.innerHTML = "";
+  const total = REASONS.length + 1;
+  // Pack mini slips from the bottom up, jittered so it looks like a real pile.
+  const cols = 4;
+  for (let i = 0; i < total; i++) {
+    const s = document.createElement("div");
+    s.className = "slip-mini";
+    const row = Math.floor(i / cols);
+    const col = i % cols;
+    const x = 12 + col * 50 + (Math.random() * 14 - 7);
+    const y = 220 - row * 16 + (Math.random() * 6 - 3);
+    const rot = Math.random() * 40 - 20;
+    s.style.left = x + "px";
+    s.style.top = y + "px";
+    s.style.transform = "rotate(" + rot + "deg)";
+    s.dataset.i = i;
+    box.appendChild(s);
+  }
+}
+
+function updateCount() {
+  const left = deck.length - drawn;
+  $("count").textContent = left + " left";
+  $("hintText").textContent = left === 0 ? "The jar is empty" : (drawn === 0 ? "Tap the jar to pull one out" : "Tap again for another");
+}
+
+function reset() {
+  deck = shuffle(REASONS).map(normalize);
+  deck.push(normalize(FINAL_REASON));
+  drawn = 0;
+  current = null;
+  buildJar();
+  updateCount();
+  $("refill").hidden = true;
+}
+
+function draw() {
+  if (drawn >= deck.length) return;
+  const jar = $("jar");
+  jar.classList.remove("shake");
+  void jar.offsetWidth;
+  jar.classList.add("shake");
+
+  // Hide the top-most remaining mini slip.
+  const minis = Array.from(document.querySelectorAll(".slip-mini:not(.gone)"));
+  const top = minis[minis.length - 1];
+  if (top) top.classList.add("gone");
+
+  current = deck[drawn];
+  drawn++;
+  const isFinal = drawn === deck.length;
+  showCard(current, drawn, isFinal);
+  updateCount();
+}
+
+function showCard(reason, n, isFinal) {
+  const card = $("card");
+  card.classList.toggle("final", isFinal);
+  $("cardNum").textContent = isFinal ? "The last one" : "Reason " + n + " of " + (deck.length - 1);
+  $("cardText").textContent = reason.text;
+  const photo = $("cardPhoto");
+  photo.innerHTML = "";
+  if (reason.photo) {
+    const img = document.createElement("img");
+    img.src = reason.photo;
+    img.alt = "";
+    photo.appendChild(img);
+  }
+  $("cardFrom").hidden = !isFinal;
+  $("cardFrom").textContent = FROM;
+  $("keepBtn").textContent = "Keep this one";
+  $("keepBtn").classList.remove("kept");
+  $("keepBtn").disabled = false;
+  $("nextBtn").textContent = isFinal ? "Close" : "Next slip";
+  $("stage").classList.add("open");
+  $("stage").setAttribute("aria-hidden", "false");
+  if (isFinal) confetti();
+  setTimeout(() => $("nextBtn").focus(), 350);
+}
+
+function closeCard() {
+  $("stage").classList.remove("open");
+  $("stage").setAttribute("aria-hidden", "true");
+  if (drawn >= deck.length) {
+    $("refill").hidden = false;
+  }
+  $("jar").focus({ preventScroll: true });
+}
+
+function keep() {
+  if (!current || kept.includes(current)) return;
+  kept.push(current);
+  const pin = document.createElement("div");
+  pin.className = "pin";
+  pin.style.transform = "rotate(" + (Math.random() * 6 - 3) + "deg)";
+  pin.textContent = current.text;
+  $("cork").appendChild(pin);
+  $("board").classList.add("show");
+  $("keepBtn").textContent = "Kept";
+  $("keepBtn").classList.add("kept");
+  $("keepBtn").disabled = true;
+}
+
+$("jar").addEventListener("click", () => {
+  if ($("stage").classList.contains("open")) return;
+  draw();
+});
+$("jar").addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); draw(); }
+});
+$("nextBtn").addEventListener("click", () => {
+  if (drawn >= deck.length) { closeCard(); return; }
+  closeCard();
+  setTimeout(draw, reduceMotion ? 0 : 250);
+});
+$("keepBtn").addEventListener("click", keep);
+$("stage").addEventListener("click", (e) => { if (e.target === $("stage")) closeCard(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && $("stage").classList.contains("open")) closeCard(); });
+$("refill").addEventListener("click", reset);
+
+/* Shake to draw (phones). iOS asks permission on first touch. */
+(function shakeSetup() {
+  if (!("DeviceMotionEvent" in window)) return;
+  let last = 0;
+  function onMotion(e) {
+    const a = e.accelerationIncludingGravity;
+    if (!a) return;
+    const force = Math.abs(a.x || 0) + Math.abs(a.y || 0) + Math.abs(a.z || 0);
+    const now = Date.now();
+    if (force > 32 && now - last > 1200 && !$("stage").classList.contains("open")) {
+      last = now;
+      draw();
+    }
+  }
+  if (typeof DeviceMotionEvent.requestPermission === "function") {
+    const ask = () => {
+      DeviceMotionEvent.requestPermission().then((s) => {
+        if (s === "granted") window.addEventListener("devicemotion", onMotion);
+      }).catch(() => {});
+      document.removeEventListener("touchend", ask);
+    };
+    document.addEventListener("touchend", ask);
+  } else {
+    window.addEventListener("devicemotion", onMotion);
+  }
+})();
+
+/* Confetti on the final slip. */
+function confetti() {
+  if (reduceMotion) return;
+  const c = $("confetti");
+  c.hidden = false;
+  const ctx = c.getContext("2d");
+  const dpr = window.devicePixelRatio || 1;
+  c.width = innerWidth * dpr;
+  c.height = innerHeight * dpr;
+  ctx.scale(dpr, dpr);
+  const colors = ["#c4577a", "#f3e4c6", "#3a2340", "#b9d3c6", "#ffd166", "#ffffff"];
+  const bits = Array.from({ length: 160 }, () => ({
+    x: Math.random() * innerWidth,
+    y: -20 - Math.random() * innerHeight * 0.5,
+    w: 6 + Math.random() * 6,
+    h: 8 + Math.random() * 8,
+    vx: Math.random() * 2 - 1,
+    vy: 2 + Math.random() * 3,
+    r: Math.random() * Math.PI,
+    vr: Math.random() * 0.2 - 0.1,
+    col: colors[Math.floor(Math.random() * colors.length)],
+  }));
+  const start = performance.now();
+  function frame(t) {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    let alive = false;
+    for (const b of bits) {
+      b.x += b.vx; b.y += b.vy; b.r += b.vr; b.vx += Math.sin(t / 300 + b.y / 50) * 0.02;
+      if (b.y < innerHeight + 20) alive = true;
+      ctx.save();
+      ctx.translate(b.x, b.y);
+      ctx.rotate(b.r);
+      ctx.fillStyle = b.col;
+      ctx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h);
+      ctx.restore();
+    }
+    if (alive && t - start < 7000) requestAnimationFrame(frame);
+    else { ctx.clearRect(0, 0, innerWidth, innerHeight); c.hidden = true; }
+  }
+  requestAnimationFrame(frame);
+}
+
+reset();
+</script>
