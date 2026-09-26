@@ -499,6 +499,9 @@
 const HER_NAME = "Guddy";
 const FROM = "Love, Sab";
 
+// false = the jar is just a doorway to the quiz for now. Set to true once the reasons below are real.
+const JAR_ENABLED = false;
+
 // Each reason is a string, or { text: "...", photo: "https://..." } to attach a picture.
 const REASONS = [
   "You laugh at your own jokes before you finish telling them.",
@@ -580,6 +583,7 @@ function buildJar() {
 }
 
 function updateCount() {
+  if (!JAR_ENABLED) return;
   const left = deck.length - drawn;
   $("count").textContent = left + " left";
   $("hintText").textContent = left === 0 ? "The jar is empty" : (drawn === 0 ? "Tap the jar to pull one out" : "Tap again for another");
@@ -664,13 +668,23 @@ function keep() {
   $("keepBtn").disabled = true;
 }
 
-$("jar").addEventListener("click", () => {
+function onJarTap() {
+  if (!JAR_ENABLED) { window.location.href = "quiz.html"; return; }
   if ($("stage").classList.contains("open")) return;
   draw();
-});
+}
+$("jar").addEventListener("click", onJarTap);
 $("jar").addEventListener("keydown", (e) => {
-  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); draw(); }
+  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onJarTap(); }
 });
+
+if (!JAR_ENABLED) {
+  $("jar").setAttribute("aria-label", "Open the quiz");
+  $("hintText").textContent = "Tap the jar to start the quiz";
+  document.querySelector(".lede").textContent = "A little game about us. Tap the jar to begin.";
+  $("count").hidden = true;
+  document.querySelector(".footer-note").hidden = true;
+}
 $("nextBtn").addEventListener("click", () => {
   if (drawn >= deck.length) { closeCard(); return; }
   closeCard();
@@ -690,7 +704,7 @@ $("refill").addEventListener("click", reset);
     if (!a) return;
     const force = Math.abs(a.x || 0) + Math.abs(a.y || 0) + Math.abs(a.z || 0);
     const now = Date.now();
-    if (force > 32 && now - last > 1200 && !$("stage").classList.contains("open")) {
+    if (JAR_ENABLED && force > 32 && now - last > 1200 && !$("stage").classList.contains("open")) {
       last = now;
       draw();
     }
