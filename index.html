@@ -58,6 +58,28 @@
 
   header { text-align: center; display: grid; gap: 4px; }
 
+  .nav {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    background: rgba(58,35,64,0.08);
+    border-radius: 999px;
+  }
+  .nav a {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 999px;
+  }
+  .nav a[aria-current="page"] {
+    background: #fff;
+    color: var(--accent-deep);
+    box-shadow: 0 2px 6px rgba(58,35,64,0.15);
+  }
+  .nav a:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+
   .eyebrow {
     font-family: var(--body);
     font-size: 12px;
@@ -421,6 +443,10 @@
 <body>
 
 <main class="page">
+  <nav class="nav" aria-label="Pages">
+    <a href="./" aria-current="page">The jar</a>
+    <a href="quiz.html">The quiz</a>
+  </nav>
   <header>
     <div class="eyebrow">Happy birthday</div>
     <h1 id="title">Guddy's Jar</h1>
